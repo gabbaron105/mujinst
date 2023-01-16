@@ -1,0 +1,38 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+
+import { client } from '../../../utils/client';
+
+export default async function handler( req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'GET') {
+    const { id } = req.query;
+    const query = postDetailQuery(id);
+
+    const data = await client.fetch(query);
+
+    res.status(200).json(data[0]);
+  }}
+
+
+
+const postDetailQuery = (postId: string | string[]) => {
+    const query = `*[_type == "post" && _id == '${postId}']{
+        _id,
+        title,
+        image{
+          asset->{
+            url
+          }
+        },
+        "name" : postedBy->{
+          userName,
+          image
+          
+        },
+        UserId,
+        description,
+        likes
+
+    }`
+    return query;
+}
